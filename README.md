@@ -1,6 +1,6 @@
 # Official Page for  [Quant Quest](http://quant-quest.auquan.com) hosted by Auquan.
 
-## IMPORTANT##
+## IMPORTANT ##
 We've made changes to the prediction function. Please [read the new documentation](https://github.com/Auquan/quant-quest-2#prediction-function)
 
 ## Trading Problem Overview ##
