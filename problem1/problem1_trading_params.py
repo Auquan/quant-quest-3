@@ -34,7 +34,7 @@ class MyTradingParams(TradingSystemParameters):
         self.__tradingFunctions = tradingFunctions
         self.__dataSetId = self.__tradingFunctions.getDataSetId()
         self.__instrumentIds = self.__tradingFunctions.getSymbolsToTrade()
-        self.__priceKey = 'ADJCLOSE'
+        self.__priceKey = 'F5'
         self.__additionalInstrumentFeatureConfigDicts = []
         self.__additionalMarketFeatureConfigDicts = []
         self.__fees = {'brokerage': 0.0001,'spread': 0.05}
@@ -86,7 +86,7 @@ class MyTradingParams(TradingSystemParameters):
         return timedelta(60, 0)  # minutes, seconds
 
     def getStartingCapital(self):
-        return 500000*len(self.__instrumentIds)
+        return 10000*len(self.__instrumentIds)
 
     '''
     This is a way to use any custom features you might have made.
@@ -176,7 +176,7 @@ class MyTradingParams(TradingSystemParameters):
                                     longLimit=10000,
                                     shortLimit=10000,
                                     capitalUsageLimit=0.10 * self.getStartingCapital(),
-                                    enterlotSize=10, exitlotSize = 10,
+                                    enterlotSize=1, exitlotSize = 1,
                                     limitType='L', price=self.getPriceFeatureKey())
 
     '''
