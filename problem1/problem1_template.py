@@ -87,19 +87,19 @@ class MyTradingFunctions():
         mom1Dict = {'featureKey': 'mom_5',
                    'featureId': 'momentum',
                    'params': {'period': 5,
-                              'featureName': 'ADJCLOSE'}}
+                              'featureName': 'F5'}}
         mom2Dict = {'featureKey': 'mom_10',
                    'featureId': 'momentum',
                    'params': {'period': 10,
-                              'featureName': 'ADJCLOSE'}}
+                              'featureName': 'F5'}}
         ma1Dict = {'featureKey': 'ma_5',
                    'featureId': 'moving_average',
                    'params': {'period': 5,
-                              'featureName': 'ADJCLOSE'}}
+                              'featureName': 'F5'}}
         ma2Dict = {'featureKey': 'ma_10',
                    'featureId': 'moving_average',
                    'params': {'period': 10,
-                              'featureName': 'ADJCLOSE'}}
+                              'featureName': 'F5'}}
         return [mom1Dict, mom2Dict, ma1Dict, ma2Dict]
 
 
