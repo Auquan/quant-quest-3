@@ -55,7 +55,7 @@ class MyTradingFunctions():
     ###############################################################################
 
     def getSymbolsToTrade(self):
-        return ['ABC', 'DEF']
+        return ['SIZ', 'MLQ']
 
     '''
     Specify all Features you want to use by  by creating config dictionaries.
