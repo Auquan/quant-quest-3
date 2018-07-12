@@ -34,7 +34,7 @@ class MyTradingFunctions():
         if datetime.today() < datetime(2018, 7, 3):
             self.dataSetId = 'QQ3DataSample'
         else:
-            self.dataSetId = 'QQ3Data'
+            self.dataSetId = 'QQ3DataDownSampled'
         self.params = {}
 
         # for example you can import and store an ML model from scikit learn in this dict
@@ -60,21 +60,16 @@ class MyTradingFunctions():
     '''
     Specify all Features you want to use by  by creating config dictionaries.
     Create one dictionary per feature and return them in an array.
-
     Feature config Dictionary have the following keys:
-
         featureId: a str for the type of feature you want to use
         featureKey: {optional} a str for the key you will use to call this feature
                     If not present, will just use featureId
         params: {optional} A dictionary with which contains other optional params if needed by the feature
-
     msDict = {'featureKey': 'ms_5',
               'featureId': 'moving_sum',
               'params': {'period': 5,
                          'featureName': 'basis'}}
-
     return [msDict]
-
     You can now use this feature by in getPRediction() calling it's featureKey, 'ms_5'
     '''
 
@@ -127,7 +122,6 @@ class MyTradingFunctions():
         ms5 = ms5Data.iloc[-1]
     You can call last datapoint for one symbol 'ABC' as
         value_for_abs = ms5['ABC']
-
     Output of the prediction function is used by the toolbox to make further trading decisions and evaluate your score.
     '''
 
@@ -197,7 +191,7 @@ class MyTradingFunctions():
                 y_predict = self.model[s].predict(X.iloc[-1].values.reshape(1,-1))
 
             # if you are making probabilistic predictions, set a threshold to convert them to 0/1
-            threshold = 0.75
+            threshold = 0.8
             predictions[s] = 1 if y_predict>threshold else 0.5
             predictions[s] = 0 if y_predict<(1-threshold) else 0.5
 
@@ -234,14 +228,11 @@ class MyCustomFeatureClassName(Feature):
     ''''
     Custom Feature to implement for instrument. This function would return the value of the feature you want to implement.
     1. create a new class MyCustomFeatureClassName for the feature and implement your logic in the function computeForInstrument() -
-
     2. modify function getCustomFeatures() to return a dictionary with Id for this class
         (follow formats like {'my_custom_feature_identifier': MyCustomFeatureClassName}.
         Make sure 'my_custom_feature_identifier' doesnt conflict with any of the pre defined feature Ids
-
         def getCustomFeatures(self):
             return {'my_custom_feature_identifier': MyCustomFeatureClassName}
-
     3. create a dict for this feature in getInstrumentFeatureConfigDicts() above. Dict format is:
             customFeatureDict = {'featureKey': 'my_custom_feature_key',
                                 'featureId': 'my_custom_feature_identifier',

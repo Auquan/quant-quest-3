@@ -73,7 +73,7 @@ class MyTradingParams(TradingSystemParameters):
     a lot of time, you realistically wont be able to keep upto pace.
     '''
     def getTimeRuleForUpdates(self):
-        return NSETimeRule(startDate=self.__startDate, endDate=self.__endDate, frequency='M', sample='5')
+        return NSETimeRule(startDate=self.__startDate, endDate=self.__endDate, frequency='M', sample='30')
 
     '''
     Returns a timedetla object to indicate frequency of updates to features
@@ -294,7 +294,13 @@ class ScoreCalculator(Feature):
             return pd.Series(0.5, index=predictionData.index)
         previousValue = instrumentLookbackData.getFeatureDf(featureKey).iloc[-1]
         currentScore = pd.Series(0.5, index=previousValue.index)
-        currentScore[predictionData!=0.5] =  currentScore - np.abs(predictionData - trueValue)/2
-        score = (previousValue*(updateNum-1)+currentScore)/updateNum#sm.accuracy_score(predictionData, trueValue)
+        currentScore[predictionData!=0.5] = currentScore +(0.5 -  np.abs(predictionData - trueValue))
+        # printdf = pd.DataFrame(index=predictionData.index)
+        # printdf['predictionData'] = predictionData
+        # printdf['trueValue'] = trueValue
+        # printdf['previousValue'] = previousValue
+        # printdf['currentScore']=currentScore
 
+        # print(printdf)
+        score = (previousValue*(updateNum-1)+currentScore)/updateNum#sm.accuracy_score(predictionData, trueValue)
         return score

@@ -127,7 +127,7 @@ class Problem1ExecutionSystem(BaseExecutionSystem):
             return executions
         executions[self.exitCondition(currentPredictions, instrumentsManager)] = -np.sign(position)*np.abs(position)
         executions[self.hackCondition(currentPredictions, instrumentsManager)] = -np.sign(position)*np.abs(position)
-
+        # print('exit?',self.exitCondition(currentPredictions, instrumentsManager))
         return executions
 
     def enterPosition(self, time, instrumentsManager, currentPredictions, capital):
@@ -140,19 +140,29 @@ class Problem1ExecutionSystem(BaseExecutionSystem):
             self.getEnterLotSize(positionData.columns, price) * self.getBuySell(currentPredictions, instrumentsManager)
         # No executions if at position limit
         executions[self.atPositionLimit(capital, positionData, price)] = 0
-
+        # print('enter?', self.enterCondition(currentPredictions, instrumentsManager))
+        # print(self.getBuySell(currentPredictions, instrumentsManager))
         return executions
 
     def getBuySell(self, currentPredictions, instrumentsManager):
         price = self.getPriceDf(instrumentsManager)
         buySell = pd.Series(0, index = price.columns)
-        if(len(price) > 2):
-            buySell[(price.iloc[-1]-price.iloc[-2])>0] = 2*currentPredictions - 1
-            buySell[(price.iloc[-1]-price.iloc[-2])<0] = -( 2*currentPredictions - 1 )
+        if(len(price) > 14):
+            buySell[(price.iloc[-1]-price.iloc[-14])>0] = 2*currentPredictions - 1
+            buySell[(price.iloc[-1]-price.iloc[-14])<0] = -( 2*currentPredictions - 1 )
         return buySell
 
     def enterCondition(self, currentPredictions, instrumentsManager):
-        return (currentPredictions != 0.5)
+        instrumentLookbackData = instrumentsManager.getLookbackInstrumentFeatures()
+        if(len(instrumentLookbackData.getFeatureDf('prediction')) <= 28):
+            return pd.Series(False, index=currentPredictions.index)
+        else:
+            price = self.getPriceDf(instrumentsManager)
+            pastPredictions = instrumentLookbackData.getFeatureDf('prediction').iloc[-14]
+            currentPriceChange = np.sign(price.iloc[-1] - price.iloc[-14])
+            pastPriceChange = np.sign(price.iloc[-14] - price.iloc[-28])
+
+            return (currentPredictions != 0.5) #& ~((currentPredictions!=pastPredictions)&(currentPriceChange==pastPriceChange))
 
     def atPositionLimit(self, capital, positionData, price):
 
@@ -165,11 +175,21 @@ class Problem1ExecutionSystem(BaseExecutionSystem):
 
     def exitCondition(self, currentPredictions, instrumentsManager):
         instrumentLookbackData = instrumentsManager.getLookbackInstrumentFeatures()
-        if(len(instrumentLookbackData.getFeatureDf('prediction')) <= 2):
+        if(len(instrumentLookbackData.getFeatureDf('prediction')) <= 28):
             return pd.Series(False, index=currentPredictions.index)
         else:
-            pastPredictions = instrumentLookbackData.getFeatureDf('prediction').iloc[-2]
-            return (currentPredictions == 0.5) | (currentPredictions!=pastPredictions)
+            price = self.getPriceDf(instrumentsManager)
+            pastPredictions = instrumentLookbackData.getFeatureDf('prediction').iloc[-14]
+            currentPriceChange = np.sign(price.iloc[-1] - price.iloc[-14])
+            pastPriceChange = np.sign(price.iloc[-14] - price.iloc[-28])
+            # printdf=pd.DataFrame(index=price.columns)
+            # printdf['currentPredictions'] = currentPredictions
+            # printdf['pastPredictions'] = pastPredictions 
+            # printdf['currentPriceChange'] = currentPriceChange
+            # printdf['pastPriceChange'] = pastPriceChange
+            # print(printdf)
+            return (currentPredictions == 0.5) | ((currentPredictions!=pastPredictions)&(currentPriceChange==pastPriceChange)) | ((currentPredictions==pastPredictions)&(currentPriceChange!=pastPriceChange))
+
 
     def hackCondition(self, currentPredictions, instrumentsManager):
         return pd.Series(False, index=currentPredictions.index)
