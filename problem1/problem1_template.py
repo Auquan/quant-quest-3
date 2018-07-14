@@ -1,21 +1,19 @@
-from backtester.trading_system_parameters import TradingSystemParameters
-from backtester.features.feature import Feature
-from datetime import datetime, timedelta
-from backtester.dataSource.csv_data_source import CsvDataSource
-from backtester.timeRule.nse_time_rule import NSETimeRule
-from problem1_execution_system import Problem1ExecutionSystem
-from backtester.orderPlacer.backtesting_order_placer import BacktestingOrderPlacer
-from backtester.trading_system import TradingSystem
-from backtester.version import updateCheck
-from backtester.constants import *
-from backtester.features.feature import Feature
-from backtester.logger import *
 import pandas as pd
 import numpy as np
-import sys
+import sys, os
 from sklearn import linear_model
 from sklearn import metrics as sm
-from problem1_trading_params import MyTradingParams
+from datetime import datetime, timedelta
+parentPath = os.path.abspath("../..")
+if parentPath not in sys.path:
+    sys.path.insert(0, parentPath)
+from backtester.features.feature import Feature
+from problem1_trading_params import MyTradingParams, MyModelLearningParams
+from backtester.model_learning_and_trading_system import MLandTradingSystem
+from backtester.version import updateCheck
+from backtester.constants import *
+from backtester.logger import *
+
 
 ## Make your changes to the functions below.
 ## SPECIFY the symbols you are modeling for in getSymbolsToTrade() below
@@ -41,9 +39,7 @@ class MyTradingFunctions():
         self.model = {}
 
         # and set a frequency at which you want to update the model
-
         self.updateFrequency = 150
-
 
     ###########################################
     ## ONLY FILL THE FOUR FUNCTIONS BELOW    ##
@@ -95,7 +91,7 @@ class MyTradingFunctions():
                    'featureId': 'moving_average',
                    'params': {'period': 10,
                               'featureName': 'F5'}}
-        return [mom1Dict, mom2Dict, ma1Dict, ma2Dict]
+        return [ma1Dict, ma2Dict]
 
 
 
@@ -126,7 +122,7 @@ class MyTradingFunctions():
     '''
 
 
-    def getPrediction(self, time, updateNum, instrumentManager,predictions):
+    def getPrediction(self, time, updateNum, instrumentManager, predictions):
 
         # holder for all the instrument features for all instruments
         lookbackInstrumentFeatures = instrumentManager.getLookbackInstrumentFeatures()
@@ -161,7 +157,7 @@ class MyTradingFunctions():
             #Creating a dataframe to hold features for this stock
             X = pd.DataFrame(index=Y.index)         #DF with rows=timestamp and columns=featureNames
             X['F1'] = factor1Values[s]
-            X['F2'] =factor2Values[s]
+            X['F2'] = factor2Values[s]
 
             # if this is the first time we are training a model, start by creating a new model
             if s not in self.model:
@@ -262,7 +258,7 @@ class MyCustomFeatureClassName(Feature):
 
 
 if __name__ == "__main__":
-    if updateCheck():
+    if False:#updateCheck():
         print('Your version of the auquan toolbox package is old. Please update by running the following command:')
         print('pip install -U auquan_toolbox')
     else:
@@ -270,10 +266,7 @@ if __name__ == "__main__":
         tf = MyTradingFunctions()
         print('Loaded config dicts and prediction function, Loading Problem 1 Params')
         tsParams = MyTradingParams(tf)
-        print('Loaded Problem 1 Params, Loading Backtester and Data')
-        tradingSystem = TradingSystem(tsParams)
-        print('Loaded Backtester and Data Loaded, Backtesting')
-    # Set onlyAnalyze to True to quickly generate csv files with all the features
-    # Set onlyAnalyze to False to run a full backtest
-    # Set makeInstrumentCsvs to False to not make instrument specific csvs in runLogs. This improves the performance BY A LOT
-        tradingSystem.startTrading(onlyAnalyze=False, shouldPlot=True, makeInstrumentCsvs=True)
+        dataSplitRatio = [2, 0, 1]
+        mlsParams = MyModelLearningParams(tsParams, dataSplitRatio, chunkSize=None)
+        system = MLandTradingSystem(tsParams, mlsParams)
+        system.trainAndBacktest(onlyAnalyze=False, shouldPlot=True, makeInstrumentCsvs=True)
