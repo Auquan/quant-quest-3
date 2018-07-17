@@ -16,10 +16,6 @@ import sys
 from sklearn import linear_model
 from sklearn import metrics as sm
 from problem1_trading_params import MyTradingParams
-try:
-    from urllib2 import urlopen
-except ImportError:
-    from urllib.request import urlopen
 
 ## Make your changes to the functions below.
 ## SPECIFY the symbols you are modeling for in getSymbolsToTrade() below
@@ -35,11 +31,7 @@ class MyTradingFunctions():
     def __init__(self):  #Put any global variables here
         self.lookback = 1200  ## max number of historical datapoints you want at any given time
         self.targetVariable = 'Y'
-        
-        url = "https://raw.githubusercontent.com/Auquan/data_set_id/master/DataSetId.txt"
-        response = urlopen(url)
-        self.dataSetId = response.read().decode('utf8')
-        
+        self.dataSetId = ''
         self.params = {}
 
         # for example you can import and store an ML model from scikit learn in this dict

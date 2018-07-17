@@ -15,6 +15,10 @@ import numpy as np
 import sys
 from sklearn import linear_model
 from sklearn import metrics as sm
+try:
+    from urllib2 import urlopen
+except ImportError:
+    from urllib.request import urlopen
 
 ## Make your changes to the functions below.
 ## SPECIFY the symbols you are modeling for in getSymbolsToTrade() below
@@ -32,7 +36,11 @@ class MyTradingParams(TradingSystemParameters):
     '''
     def __init__(self, tradingFunctions):
         self.__tradingFunctions = tradingFunctions
-        self.__dataSetId = self.__tradingFunctions.getDataSetId()
+
+        url = "https://raw.githubusercontent.com/Auquan/data_set_id/master/DataSetId.txt"
+        response = urlopen(url)
+        self.__dataSetId = response.read().decode('utf8').rstrip() + self.__tradingFunctions.getDataSetId()
+
         self.__instrumentIds = self.__tradingFunctions.getSymbolsToTrade()
         self.__priceKey = 'F5'
         self.__additionalInstrumentFeatureConfigDicts = []
