@@ -39,7 +39,7 @@ class MyTradingParams(TradingSystemParameters):
 
         url = "https://raw.githubusercontent.com/Auquan/data_set_id/master/DataSetId.txt"
         response = urlopen(url)
-        self.__dataSetId = response.read().decode('utf8').rstrip()
+        self.__dataSetId = response.read().decode('utf8').rstrip() + self.__tradingFunctions.getDataSetIdTemp()
 
         self.__instrumentIds = self.__tradingFunctions.getSymbolsToTrade()
         self.__priceKey = 'F5'
