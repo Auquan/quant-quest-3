@@ -201,7 +201,7 @@ class MyTradingFunctions():
     def getLookbackSize(self):
         return self.lookback
 
-    def getDataSetId(self):
+    def getDataSetIdTemp(self):
         return self.dataSetId
 
     def getTargetVariableKey(self):
