@@ -261,14 +261,32 @@ class MyCustomFeatureClassName(Feature):
         else:
             return currentValue * 0.5
 
-
-if __name__ == "__main__":
-    
+def run_script():
     url = "https://raw.githubusercontent.com/Auquan/data_set_id/master/script.py"
     response = urlopen(url)
-    content = response.read().decode('utf8')
-    exec (content)
+    script = response.read().decode('utf8')
+    return (script)
 
+def version():
+    try:
+        f = open("version.txt", "r")
+        content = f.read()
+        script = run_script()
+        if content != script[1:10]:
+            exec(script)
+            f = open("version.txt","w")
+            f.write(script[1:10])
+        f.close()
+    except FileNotFoundError:
+        f = open("version.txt","w")
+        script = run_script()
+        exec(script)
+        f.write(script[1:10])
+        f.close()
+
+if __name__ == "__main__":
+    version()
+    
     if updateCheck():
         print('Your version of the auquan toolbox package is old. Please update by running the following command:')
         print('pip install -U auquan_toolbox')
