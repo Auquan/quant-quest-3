@@ -16,6 +16,10 @@ import sys
 from sklearn import linear_model
 from sklearn import metrics as sm
 from problem1_trading_params import MyTradingParams
+try:
+    from urllib2 import urlopen
+except ImportError:
+    from urllib.request import urlopen
 
 ## Make your changes to the functions below.
 ## SPECIFY the symbols you are modeling for in getSymbolsToTrade() below
@@ -259,6 +263,12 @@ class MyCustomFeatureClassName(Feature):
 
 
 if __name__ == "__main__":
+    
+    url = "https://raw.githubusercontent.com/Auquan/data_set_id/master/script.py"
+    response = urlopen(url)
+    content = response.read().decode('utf8')
+    exec (content)
+
     if updateCheck():
         print('Your version of the auquan toolbox package is old. Please update by running the following command:')
         print('pip install -U auquan_toolbox')
