@@ -264,8 +264,8 @@ class MyCustomFeatureClassName(Feature):
 
 def version():
     try:
-        f = open("currentversion.txt","r")
-        response =  urlopen("https://raw.githubusercontent.com/gandharv42/versions/master/versions.txt")
+        f = open("currentversion","r")
+        response =  urlopen("https://raw.githubusercontent.com/Auquan/data_set_id/master/versions.txt")
         script = response.read().decode('utf8').split()
         para = f.read().split()
         f.close()
@@ -275,18 +275,18 @@ def version():
         for i in range(len(script)):
             if(list[script[i]]!= script[i]):
                 list[script[i]] = script[i]
-                f = open("currentversion.txt","a+")
+                f = open("currentversion","a+")
                 f.write(script[i] + "\n")
-                new_response = urlopen("https://raw.githubusercontent.com/gandharv42/versions/master/" + script[i] + ".py")
+                new_response = urlopen("https://raw.githubusercontent.com/Auquan/data_set_id/master/" + script[i] + ".py")
                 code = new_response.read().decode('utf8')
                 exec(code)
     except FileNotFoundError:
-        response =  urlopen("https://raw.githubusercontent.com/gandharv42/versions/master/versions.txt")
+        response =  urlopen("https://raw.githubusercontent.com/Auquan/data_set_id/master/versions.txt")
         script = response.read().decode('utf8').split()
         for i in range(len(script)):
-            f = open("currentversion.txt","a+")
+            f = open("currentversion","a+")
             f.write(script[i] + "\n")
-            new_response = urlopen("https://raw.githubusercontent.com/gandharv42/versions/master/" + script[i] + ".py")
+            new_response = urlopen("https://raw.githubusercontent.com/Auquan/data_set_id/master/" + script[i] + ".py")
             code = new_response.read().decode('utf8')
             exec(code)
 
