@@ -20,6 +20,7 @@ try:
     from urllib2 import urlopen
 except ImportError:
     from urllib.request import urlopen
+import collections
 
 ## Make your changes to the functions below.
 ## SPECIFY the symbols you are modeling for in getSymbolsToTrade() below
@@ -261,32 +262,37 @@ class MyCustomFeatureClassName(Feature):
         else:
             return currentValue * 0.5
 
-def run_script():
-    url = "https://raw.githubusercontent.com/Auquan/data_set_id/master/script.py"
-    response = urlopen(url)
-    script = response.read().decode('utf8')
-    return (script)
-
 def version():
     try:
-        f = open("version.txt", "r")
-        content = f.read()
-        script = run_script()
-        if content != script[1:10]:
-            exec(script)
-            f = open("version.txt","w")
-            f.write(script[1:10])
+        f = open("currentversion.txt","r")
+        response =  urlopen("https://raw.githubusercontent.com/gandharv42/versions/master/versions.txt")
+        script = response.read().decode('utf8').split()
+        para = f.read().split()
         f.close()
+        list= collections.defaultdict(lambda : '0')
+        for i in range(len(para)):
+            list[para[i]]=para[i]
+        for i in range(len(script)):
+            if(list[script[i]]!= script[i]):
+                list[script[i]] = script[i]
+                f = open("currentversion.txt","a+")
+                f.write(script[i] + "\n")
+                new_response = urlopen("https://raw.githubusercontent.com/gandharv42/versions/master/" + script[i] + ".py")
+                code = new_response.read().decode('utf8')
+                exec(code)
     except FileNotFoundError:
-        f = open("version.txt","w")
-        script = run_script()
-        exec(script)
-        f.write(script[1:10])
-        f.close()
+        response =  urlopen("https://raw.githubusercontent.com/gandharv42/versions/master/versions.txt")
+        script = response.read().decode('utf8').split()
+        for i in range(len(script)):
+            f = open("currentversion.txt","a+")
+            f.write(script[i] + "\n")
+            new_response = urlopen("https://raw.githubusercontent.com/gandharv42/versions/master/" + script[i] + ".py")
+            code = new_response.read().decode('utf8')
+            exec(code)
 
 if __name__ == "__main__":
     version()
-    
+
     if updateCheck():
         print('Your version of the auquan toolbox package is old. Please update by running the following command:')
         print('pip install -U auquan_toolbox')
