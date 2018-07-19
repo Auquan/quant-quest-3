@@ -39,7 +39,7 @@ class MyTradingParams(TradingSystemParameters):
     '''
     def __init__(self, leagueFunctions):
         self.__leagueFunctions = leagueFunctions
-        url = "https://raw.githubusercontent.com/Auquan/data_set_id/master/DataSetId.txt"
+        url = "https://raw.githubusercontent.com/Auquan/data_set_id/master/dsiqq3p2"
         response = urlopen(url)
         self.__dataSetId = response.read().decode('utf8').rstrip()
         self.__instrumentIds = []
