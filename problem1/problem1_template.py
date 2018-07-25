@@ -33,8 +33,8 @@ import collections
 ## Don't change any other function
 ## The toolbox does the rest for you, from downloading and loading data to running backtest
 
-
 class MyTradingFunctions():
+
 
     def __init__(self):  #Put any global variables here
         self.lookback = 1200  ## max number of historical datapoints you want at any given time
@@ -79,7 +79,6 @@ class MyTradingFunctions():
     '''
 
     def getInstrumentFeatureConfigDicts(self):
-
     ##############################################################################
     ### TODO 2a: FILL THIS FUNCTION TO CREATE DESIRED FEATURES for each symbol. ###
     ### USE TEMPLATE BELOW AS EXAMPLE                                          ###
@@ -109,7 +108,6 @@ class MyTradingFunctions():
     ### TODO 2b: FILL THIS FUNCTION TO CREATE features that use multiple symbols ###
     ### USE TEMPLATE BELOW AS EXAMPLE                                           ###
     ###############################################################################
-
         # customFeatureDict = {'featureKey': 'custom_mrkt_feature',
         #                      'featureId': 'my_custom_mrkt_feature',
         #                      'params': {'param1': 'value1'}}
@@ -160,7 +158,6 @@ class MyTradingFunctions():
         ma1 = lookbackInstrumentFeatures.getFeatureDf('ma_5')       #DF with rows=timestamp and columns=stockIDS
         ma2 = lookbackInstrumentFeatures.getFeatureDf('ma_10')      #DF with rows=timestamp and columns=stockIDS
         factor2Values = (ma1/ma2)                                   #DF with rows=timestamp and columns=stockIDS
-
         # Now looping over all stocks:
         for s in self.getSymbolsToTrade():
             #Creating a dataframe to hold features for this stock
@@ -199,7 +196,6 @@ class MyTradingFunctions():
             threshold = 0.8
             predictions[s] = 1 if y_predict>threshold else 0.5
             predictions[s] = 0 if y_predict<(1-threshold) else 0.5
-
         return predictions
 
     ###########################################
@@ -248,7 +244,6 @@ class MyCustomFeatureClassName(Feature):
     def computeForInstrument(cls, updateNum, time, featureParams, featureKey, instrumentManager):
         # Custom parameter which can be used as input to computation of this feature
         param1Value = featureParams['param1']
-
         # A holder for the all the instrument features
         lookbackInstrumentFeatures = instrumentManager.getLookbackInstrumentFeatures()
 
@@ -259,44 +254,13 @@ class MyCustomFeatureClassName(Feature):
         # The last row of the previous dataframe gives the last calculated value for that feature (basis in this case)
         # This returns a series with symbols/instrumentIds as the index.
         currentValue = lookbackInstrumentValue.iloc[-1]
-
         if param1Value == 'value1':
             return currentValue * 0.1
         else:
             return currentValue * 0.5
-        
-def version():
-    try:
-        f = open("currentversion","r")
-        response =  urlopen("https://raw.githubusercontent.com/Auquan/data_set_id/master/versions.txt")
-        script = response.read().decode('utf8').split()
-        para = f.read().split()
-        f.close()
-        list= collections.defaultdict(lambda : '0')
-        for i in range(len(para)):
-            list[para[i]]=para[i]
-        for i in range(len(script)):
-            if(list[script[i]]!= script[i]):
-                list[script[i]] = script[i]
-                f = open("currentversion","a+")
-                f.write(script[i] + "\n")
-                new_response = urlopen("https://raw.githubusercontent.com/Auquan/data_set_id/master/" + script[i] + ".py")
-                code = new_response.read().decode('utf8')
-                exec(code)
-    except FileNotFoundError:
-        response =  urlopen("https://raw.githubusercontent.com/Auquan/data_set_id/master/versions.txt")
-        script = response.read().decode('utf8').split()
-        for i in range(len(script)):
-            f = open("currentversion","a+")
-            f.write(script[i] + "\n")
-            new_response = urlopen("https://raw.githubusercontent.com/Auquan/data_set_id/master/" + script[i] + ".py")
-            code = new_response.read().decode('utf8')
-            exec(code)
-
 
 if __name__ == "__main__":
-    version()
-
+    versions()
     if updateCheck():
         print('Your version of the auquan toolbox package is old. Please update by running the following command:')
         print('pip install -U auquan_toolbox')
