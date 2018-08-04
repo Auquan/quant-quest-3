@@ -107,7 +107,7 @@ class MyTradingParams(TradingSystemParameters):
     '''
 
     def getCustomFeatures(self):
-        return {'prediction': TrainingPredictionFeature,
+        customFeatures = {'prediction': TrainingPredictionFeature,
                 'fees_and_spread': FeesCalculator,
                 'RankPnL':RankPnL,
                 'Separation_PnL': AverageSeparation,
