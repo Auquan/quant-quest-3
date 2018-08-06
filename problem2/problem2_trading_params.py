@@ -260,7 +260,7 @@ class TrainingPredictionFeature(Feature):
         lf = featureParams['leagueFunctions']
         players = lf.getPlayersAndPosition(time, updateNum, instrumentManager)
         
-        if len(players>0):
+        if len(players)>0:
             
             # print(pd.Series([instrumentManager.getInstrument(x).getCurrentPosition() for x in predictions.index], index=predictions.index))
             # print(players)
