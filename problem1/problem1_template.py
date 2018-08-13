@@ -10,9 +10,7 @@ from backtester.version import updateCheck
 from backtester.constants import *
 from backtester.features.feature import Feature
 from backtester.logger import *
-import sys
-sys.path.append("..")
-from version import versions
+from backtester.versions import versions
 import pandas as pd
 import numpy as np
 import sys
